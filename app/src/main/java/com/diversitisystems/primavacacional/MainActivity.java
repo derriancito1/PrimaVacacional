@@ -2,10 +2,14 @@ package com.diversitisystems.primavacacional;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -13,6 +17,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 import java.text.DecimalFormat;
 import java.util.Calendar;
@@ -24,11 +32,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView fechaInicio;
     private EditText editTextFechaInicio, editTextSueldo,editTextPrima,editTextFechaFin;
     private TextView textView;
-    private int day, month, year, dias, diasVacaciones, prima;
+    private int day, month, year, dias, diasVacaciones, prima, contador;
     private int sueldo,aguinaldo;
     private Date fechaInicial, fechaFinal;
     private double aguinaldoAnual, aguinaldoProporcional,anio;
-    /*private AdView mAdView;*/
+    private AdView mAdView;
     private String regexp;
     private AlertDialog alert;
     private SharedPreferences prefs;
@@ -48,6 +56,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);*/
+
+
+        MobileAds.initialize(this, "ca-app-pub-9001957420901694~9791072804");
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
         //Casteos
         fechaInicio=(ImageView) findViewById(R.id.imageView);
         calcular=(Button)findViewById(R.id.calcular);
@@ -73,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         monthCalculo = (month+1)>=10 ? ""+(month+1) : "0"+(month+1);
         dayCalculo = day>=10 ? ""+day : "0"+day;
         editTextFechaFin.setText(year+"/"+monthCalculo+"/"+dayCalculo);
-        prefs = getSharedPreferences("PreferencesAhorro", Context.MODE_PRIVATE);
+        prefs = getSharedPreferences("PreferencesPrima", Context.MODE_PRIVATE);
 
     }
 
@@ -168,9 +183,54 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }else{
             textView.setText("Te corresponden $"+formato.format(totalPrimaVacacional)+" de Prima Vacacional. Por "+diasVacaciones+" días de vacaciones con un "+prima+"% de prima vacacional. Y tienes una antiguedad de "+formato.format(anio)+" años");
         }
+        valorame();
+    }
 
 
+    public void valorame(){
+        boolean calificado = getCalificadoPrefs();
+        contador=1+getContadorPrefs();
+
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt("contador", contador);
+        editor.apply();
+
+        if (!calificado && contador>=3){
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage("¿Valora nuestra App? Tu opinión nos importa: ¡Dinos lo que piensas!")
+                            .setCancelable(false)
+                            .setPositiveButton("Ok, ir a Google Play", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.diversitisystems.primavacacional")));
 
 
+                                    SharedPreferences.Editor editor = prefs.edit();
+                                    editor.putBoolean("calificado", true);
+                                    editor.apply();
+                                }
+                            })
+                            .setNegativeButton("Ahora no", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+                    alert = builder.create();
+                    alert.show();
+                }
+            },3000);
+
+        }
+    }
+
+    private boolean getCalificadoPrefs(){
+        return prefs.getBoolean("calificado", false);
+    }
+
+    private int getContadorPrefs(){
+        return prefs.getInt("contador", 0);
     }
 }

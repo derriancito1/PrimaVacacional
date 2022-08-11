@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "819351687787",
+    "firebase_url": "https://prima-vacacional.firebaseio.com",
+    "project_id": "prima-vacacional",
+    "storage_bucket": "prima-vacacional.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:819351687787:android:1b8963f4b1286f0a",
+        "android_client_info": {
+          "package_name": "com.diversitisystems.primavacacional"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "819351687787-ogksooq998m7j5v63g47oo6gisur1kb7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.diversitisystems.primavacacional",
+            "certificate_hash": "bf80a54b21ecd55711074c84cc475ac3575a8d52"
+          }
+        },
+        {
+          "client_id": "819351687787-vo5uke90bf37uap6coidfiu3glp2kmi9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCY4Km_L8fFrVOj9kdIYlfG5J8kKQf0Sy4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "819351687787-vo5uke90bf37uap6coidfiu3glp2kmi9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      },
+      "admob_app_id": "ca-app-pub-9001957420901694~9791072804"
+    }
+  ],
+  "configuration_version": "1"
+}
